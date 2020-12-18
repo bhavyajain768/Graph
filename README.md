@@ -1,1 +1,1 @@
-These are implemention of electrical networks using graphs and various operations on them. 
+These are implemention of electrical networks using graphs and various operations on them.
