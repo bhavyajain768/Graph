@@ -10,10 +10,10 @@ def rowRotation(T,a,i,n):
     j,D = 0,{}
     while(j<n):
 # This while loop is for storing the new values of attribute values (after rotation) corresponding to (i,j) node in a dict.
-        D[(i,(j-a+n)%n)] = array[j]
+        D[(i,(j-a+n)%n)] = {'A':array[j],'ans':T.nodes[(i,(j-a+n)%n)]['B']*array[j]}
         j=j+1
 # This is to set new attributes values to the graph.
-    networkx.set_node_attributes(T,D,'A')
+    networkx.set_node_attributes(T,D)
 
 def colRotation(T,a,j,n):
 # Function for doing col rotation of j-th col a-times in the given Torus network of size (nxn)(a<n,j<n)
@@ -25,10 +25,10 @@ def colRotation(T,a,j,n):
     i,D = 0,{}
     while(i<n):
 # This while loop is for storing the new values of attribute values (after rotation) corresponding to (i,j) node in a dict.
-        D[((i-a+n)%n),j] = array[i]
+        D[((i-a+n)%n,j)] = {'B':array[i],'ans':T.nodes[((i-a+n)%n,j)]['A']*array[i]}
         i=i+1
 # This is to set new attributes values to the graph.
-    networkx.set_node_attributes(T,D,'B')
+    networkx.set_node_attributes(T,D)
 
 def multiply(A,B):
 # A and B are 2-D arrays represnting two square matrices(nxn) and we have to multiply them using Canon's Algo.
@@ -40,8 +40,25 @@ def multiply(A,B):
     while(i<n):
         j=0
         while(j<n):
-            D[(i,j)] = {'A':A[i][j],'B':B[i][j]}
+            D[(i,j)] = {'A':A[i][j],'B':B[i][j],'ans':A[i][j]*B[i][j]}
             j=j+1
         i=i+1
-# These are used to make two attributes in the Torus which stores corresponding values of two matricies.
+# These are used to make two attributes in the Torus which stores corresponding values of two matricies and third attribute to store the multiplied value.
     networkx.set_node_attributes(C,D)
+    Current = C
+    p = 0
+    while(p<n):
+# This while loop is for making new torus after every set of col and row rotation and to update current which will finally yeild multiplied matrix.
+        j = 0
+        while(j<n):
+# This while loop is for doing col rotations.
+            colRotation(C,j,j,n)
+            j=j+1
+        i=0
+        while(i<n):
+# This while loop is for doing row rotations.
+            rowRotation(C,i,i,n)
+            i=i+1
+        Current = add(Current,C)
+        p=p+1
+    return Current
