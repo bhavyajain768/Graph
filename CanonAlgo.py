@@ -5,7 +5,7 @@ def rowRotation(T,a,i,n):
     array,j = [],0
     while(j<n):
 # This while loop is for storing the current attributes of nodes in an array before the rotation.
-        array[j] = T.nodes[(i,j)]['A']
+        array.append(T.nodes[(i,j)]['A'])
         j=j+1
     j,D = 0,{}
     while(j<n):
@@ -20,7 +20,7 @@ def colRotation(T,a,j,n):
     array,i = [],0
     while(i<n):
 # This while loop is for storing the current attributes of nodes in an array before the rotation.
-        array[i] = T.nodes[(i,j)]['B']
+        array.append(T.nodes[(i,j)]['B'])
         i=i+1
     i,D = 0,{}
     while(i<n):
@@ -29,6 +29,21 @@ def colRotation(T,a,j,n):
         i=i+1
 # This is to set new attributes values to the graph.
     networkx.set_node_attributes(T,D)
+
+def add(T1,T2,n):
+# This function is for adding the 'ans' attributes of corresponding nodes of both the torus networks T1,T2 of size (nxn)
+    D = {}
+# A dictionary to store the added attribute value of both the networks.
+    i=0
+    while(i<n):
+# These while loops are for executing every node in the torus T1,T2
+        j=0
+        while(j<n):
+            D[i,j] = T1.nodes[(i,j)]['ans']+T2.nodes[(i,j)]['ans']
+            j=j+1
+        i=i+1
+# This is to set new attribute value of ans to the graph
+    networkx.set_node_attributes(T1,D,'ans')
 
 def multiply(A,B):
 # A and B are 2-D arrays represnting two square matrices(nxn) and we have to multiply them using Canon's Algo.
@@ -45,20 +60,34 @@ def multiply(A,B):
         i=i+1
 # These are used to make two attributes in the Torus which stores corresponding values of two matricies and third attribute to store the multiplied value.
     networkx.set_node_attributes(C,D)
-    Current = C
-    p = 0
+    j = 0
+    while(j<n):
+# This while loop is for doing col rotations.
+        colRotation(C,j,j,n)
+        j=j+1
+    i=0
+    while(i<n):
+# This while loop is for doing row rotations.
+        rowRotation(C,i,i,n)
+        i=i+1
+    Current = C.copy()
+    p = 1
     while(p<n):
 # This while loop is for making new torus after every set of col and row rotation and to update current which will finally yeild multiplied matrix.
         j = 0
         while(j<n):
 # This while loop is for doing col rotations.
-            colRotation(C,j,j,n)
+            colRotation(C,1,j,n)
             j=j+1
         i=0
         while(i<n):
 # This while loop is for doing row rotations.
-            rowRotation(C,i,i,n)
+            rowRotation(C,1,i,n)
             i=i+1
-        Current = add(Current,C)
+        add(Current,C,n)
         p=p+1
     return Current
+
+
+C=multiply([[4,2,5],[3,1,-4],[-2,6,-3]],[[7,4,5],[-1,0,1],[8,2,3]])
+C.nodes[(1,0)]['ans']
