@@ -82,3 +82,7 @@ def create_torusNetwork(x,y):
         i = i+1
     return G
 
+G =create_torusNetwork(3,3)
+for node in G.neighbors((0,0)):
+    if (node==(1,0)):
+        print(node)

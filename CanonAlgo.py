@@ -1,5 +1,25 @@
 from Network import *
 
+def searchNode(T,v,key):
+# Function for searching a node of required key in the graph using links and edges in the graph.
+    D = {}
+    for node in T:
+        D[node] = 0
+    networkx.set_node_attributes(T,D,'visited')
+    S = [v]
+# A stack to store nodes which can be visited after an iteration.
+    while(S):
+        for node in T.neighbors(v):
+# An iteration to travel through neighbors of given node.
+            if (T.nodes[node]['visited']==0):
+                T.nodes[node]['visited'] = 1
+                if (node==key):
+                    return node
+                else:
+                    S = [node]+S
+        v = S.pop(0)
+    return (-1,-1)
+
 def rowRotation(T,a,i,n):
 # Function for doing row rotation of i-th row a-times in the given Torus network of size (nxn)(a<n,i<n)
     array,j = [],0
