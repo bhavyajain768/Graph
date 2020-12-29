@@ -2,6 +2,8 @@ from Network import *
 
 def searchNode(T,v,key):
 # Function for searching a node of required key in the graph using links and edges in the graph.
+    if (v==key):
+        return v
     D = {}
     for node in T:
         D[node] = 0
@@ -22,33 +24,44 @@ def searchNode(T,v,key):
 
 def rowRotation(T,a,i,n):
 # Function for doing row rotation of i-th row a-times in the given Torus network of size (nxn)(a<n,i<n)
-    array,j = [],0
-    while(j<n):
-# This while loop is for storing the current attributes of nodes in an array before the rotation.
-        array.append(T.nodes[(i,j)]['A'])
-        j=j+1
-    j,D = 0,{}
-    while(j<n):
-# This while loop is for storing the new values of attribute values (after rotation) corresponding to (i,j) node in a dict.
-        D[(i,(j-a+n)%n)] = {'A':array[j],'ans':T.nodes[(i,(j-a+n)%n)]['B']*array[j]}
-        j=j+1
-# This is to set new attributes values to the graph.
-    networkx.set_node_attributes(T,D)
+    p = 1
+    if (a!=0 and a!=1 and n%a == 0):
+# If above condition hold then we can traverse through the row by doing below loop n div a times
+        p = n/a
+    count = 0
+    while(count<p):
+# This while loop will traverse through every node of the row.
+        value,j = T.nodes[(i,count)]['A'],count
+        node = searchNode(T,(i,j),(i,(j-a+n)%n))
+        T.nodes[node]['A'],T.nodes[node]['ans'],value = value,value*T.nodes[node]['B'],T.nodes[node]['A']
+        j = (j-a+n)%n
+        while(j!=count):
+# Loop for updating the row rotated node attribute.
+            node = searchNode(T,(i,j),(i,(j-a+n)%n))
+            T.nodes[node]['A'],T.nodes[node]['ans'],value = value,value*T.nodes[node]['B'],T.nodes[node]['A']
+            j = (j-a+n)%n
+        count = count+1
 
+        
 def colRotation(T,a,j,n):
-# Function for doing col rotation of j-th col a-times in the given Torus network of size (nxn)(a<n,j<n)
-    array,i = [],0
-    while(i<n):
-# This while loop is for storing the current attributes of nodes in an array before the rotation.
-        array.append(T.nodes[(i,j)]['B'])
-        i=i+1
-    i,D = 0,{}
-    while(i<n):
-# This while loop is for storing the new values of attribute values (after rotation) corresponding to (i,j) node in a dict.
-        D[((i-a+n)%n,j)] = {'B':array[i],'ans':T.nodes[((i-a+n)%n,j)]['A']*array[i]}
-        i=i+1
-# This is to set new attributes values to the graph.
-    networkx.set_node_attributes(T,D)
+# Function for doing col rotation of j-th col a-times in the given Torus network of size (nxn)(a<n,i<n)
+    p = 1
+    if (a!=0 and a!=1 and n%a == 0):
+# If above condition hold then we can traverse through the col by doing below loop n div a times
+        p = n/a
+    count = 0
+    while(count<p):
+# This while loop will traverse through every node of the col.
+        value,i = T.nodes[(count,j)]['B'],count
+        node = searchNode(T,(i,j),((i-a+n)%n,j))
+        T.nodes[node]['B'],T.nodes[node]['ans'],value = value,value*T.nodes[node]['A'],T.nodes[node]['B']
+        i = (i-a+n)%n
+        while(i!=count):
+# Loop for updating the col rotated node attribute.
+            node = searchNode(T,(i,j),((i-a+n)%n,j))
+            T.nodes[node]['B'],T.nodes[node]['ans'],value = value,value*T.nodes[node]['A'],T.nodes[node]['B']
+            i = (i-a+n)%n
+        count = count+1
 
 def add(T1,T2,n):
 # This function is for adding the 'ans' attributes of corresponding nodes of both the torus networks T1,T2 of size (nxn)
@@ -109,5 +122,5 @@ def multiply(A,B):
     return Current
 
 
-C=multiply([[4,2,5],[3,1,-4],[-2,6,-3]],[[7,4,5],[-1,0,1],[8,2,3]])
-C.nodes[(1,0)]['ans']
+C=multiply([[1,2,3,4],[5,6,7,8],[9,1,2,3],[4,5,6,7]],[[8,9,1,2],[3,4,5,6],[7,8,9,1],[2,3,4,5]])
+C.nodes[(1,1)]['ans']
