@@ -12,6 +12,8 @@ def searchNode(T,v,key):
 # A stack to store nodes which can be visited after an iteration.
     while(S):
         for node in T.neighbors(v):
+#For increasing the hop_count of the edge we used from v to reach node.
+            T.edges[v,node]['hop_count'] = T.edges[v,node]['hop_count']+1
 # An iteration to travel through neighbors of given node.
             if (T.nodes[node]['visited']==0):
                 T.nodes[node]['visited'] = 1
@@ -93,6 +95,12 @@ def multiply(A,B):
         i=i+1
 # These are used to make two attributes in the Torus which stores corresponding values of two matricies and third attribute to store the multiplied value.
     networkx.set_node_attributes(C,D)
+# For adding edge attribute hop_count in the graph with initial value = 0
+    D2 = {}
+    for edge in C.edges:
+        D2[edge] = 0
+    networkx.set_edge_attributes(C,D2,'hop_count')
+
     j = 0
     while(j<n):
 # This while loop is for doing col rotations.
@@ -123,4 +131,4 @@ def multiply(A,B):
 
 
 C=multiply([[1,2,3,4],[5,6,7,8],[9,1,2,3],[4,5,6,7]],[[8,9,1,2],[3,4,5,6],[7,8,9,1],[2,3,4,5]])
-C.nodes[(1,1)]['ans']
+C.edges[(3,2),(3,3)]['hop_count']
