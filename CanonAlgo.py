@@ -127,8 +127,13 @@ def multiply(A,B):
             i=i+1
         add(Current,C,n)
         p=p+1
-    return Current
+    i = 0
+    while(i<n):
+        j = 0
+        while(j<n):
+            print(Current.nodes[(i,j)]['ans'],end = ' ')
+            j = j+1 
+        print()
+        i = i+1
 
-
-C=multiply([[1,2,3,4],[5,6,7,8],[9,1,2,3],[4,5,6,7]],[[8,9,1,2],[3,4,5,6],[7,8,9,1],[2,3,4,5]])
-C.edges[(3,2),(3,3)]['hop_count']
+multiply([[1,2,3,4],[5,6,7,8],[9,1,2,3],[4,5,6,7]],[[8,9,1,2],[3,4,5,6],[7,8,9,1],[2,3,4,5]])
